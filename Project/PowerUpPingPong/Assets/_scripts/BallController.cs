@@ -11,7 +11,7 @@ public class BallController : MonoBehaviour
     [SerializeField, Range(1, 1000), Tooltip("This is an attribute, helpful for understanding what a field does, or Units")]
     // 10 here, is the default value, if you hit "reset" on the Component accidentally, this value comes back.
     private float _moveSpeed = 10.0f;
-
+    [SerializeField] bool _startOnAwake = false;
     //Awake is called before start, to get components
     private void Awake()
     {
@@ -40,12 +40,15 @@ public class BallController : MonoBehaviour
         //Dependency Injection. Part of Programmer's Design principles.
         //S.O.L.I.D ,  the D is Dependency Injection. Still, not DRY.
 
-        if (_rb != null)
+        if (_startOnAwake)
         {
-            Debug.Log("Rigidbody bound");
-        }
+            if (_rb != null)
+            {
+                Debug.Log("Rigidbody bound");
+            }
 
-        _rb.AddForce(_moveSpeed * 10.0f * Vector3.down, ForceMode.Impulse);
+            _rb.AddForce(_moveSpeed * 10.0f * Vector3.down, ForceMode.Impulse);
+        }
     }
 
     // Update is called once per frame
