@@ -10,8 +10,11 @@ public class BallController : MonoBehaviour
     private Rigidbody _rb;
     [SerializeField, Range(1, 1000), Tooltip("This is an attribute, helpful for understanding what a field does, or Units")]
     // 10 here, is the default value, if you hit "reset" on the Component accidentally, this value comes back.
-    private float _moveSpeed = 10.0f;
-    [SerializeField] bool _startOnAwake = false;
+    private float _moveSpeed = 10.0f, _affordanceAngle = 10.0f;
+    [SerializeField] bool _startOnAwake = false, _lastBounceValid;
+    private Vector3 _bounceDirection = Vector3.zero;
+    [SerializeField] private float _reflectAngle, _offset;
+    [SerializeField] private Transform _player;
     //Awake is called before start, to get components
     private void Awake()
     {
@@ -42,7 +45,7 @@ public class BallController : MonoBehaviour
 
         if (_startOnAwake)
         {
-            if (_rb != null)
+            if (_rb)
             {
                 Debug.Log("Rigidbody bound");
             }
@@ -51,9 +54,37 @@ public class BallController : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
+        //find offset direction from player
+        Vector3 offsetDir = new(_player.position.x + _offset, 0, _player.position.z + _offset);
+        _bounceDirection = offsetDir - transform.position;
         
+        //Debud lines for Direction
+        Debug.DrawRay(transform.position, _bounceDirection.normalized * 10.0f, Color.magenta);
+
+        //Check valid bounce
+        if (_reflectAngle < _affordanceAngle)
+        {
+            _lastBounceValid = false;
+        }
+
+        else
+        {
+            _lastBounceValid = true;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        _reflectAngle = Vector3.Angle(_rb.velocity.normalized, collision.GetContact(0).normal);
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (!_lastBounceValid)
+        {
+            _rb.AddForce(_bounceDirection.normalized * _moveSpeed, ForceMode.Impulse);
+        }
     }
 }
