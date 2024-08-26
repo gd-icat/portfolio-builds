@@ -8,4 +8,19 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/main.unity
     guid: b784a752909b0ed458ecfaad19d0ec0a
+  - enabled: 1
+    path: Assets/Scenes/level0.unity
+    guid: 02a7ade9b8bd8c34dbec6b058a3c2946
+  - enabled: 1
+    path: Assets/Scenes/Intro.unity
+    guid: 25d50cc728c5f364aaba4818afe96121
+  - enabled: 1
+    path: Assets/Scenes/TileMap.unity
+    guid: 6ffd0b87acd189f44bed260cc55c7509
+  - enabled: 1
+    path: Assets/Scenes/CombatCutScenes.unity
+    guid: b35b544626c52e049b1037806f4052bf
+  - enabled: 1
+    path: Assets/Scenes/GameOver.unity
+    guid: d07e4ad0a63471448abf8f46cc7a9a83
   m_configObjects: {}
