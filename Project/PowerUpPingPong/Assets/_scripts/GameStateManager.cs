@@ -81,13 +81,13 @@ public class GameStateManager : MonoBehaviour
                     //enable input, fade out menu UI, start SFX
                     //load level scenes
                     _index++;
-                    LoadScene(_index);
+                    LoadSceneNext(_index);
                     break;
                 case GameStates.results:
                     //On Game End
                     //disable input, fade in Result UI / Game Over UI, change music
                     //load last scene
-                    LoadScene(SceneManager.sceneCountInBuildSettings - 1);
+                    LoadSceneNext(SceneManager.sceneCountInBuildSettings - 1);
                     break;
                 case GameStates.pause:
                     //Disable input, fade in Pause menu UI, pause music
@@ -101,7 +101,7 @@ public class GameStateManager : MonoBehaviour
         }
     }
 
-    private void LoadScene(int sceneId)
+    private void LoadSceneNext(int sceneId)
     {
         if(SceneManager.sceneCount < 2)
         {
@@ -114,5 +114,24 @@ public class GameStateManager : MonoBehaviour
             SceneManager.UnloadSceneAsync(sceneId - 1);
             SceneManager.LoadSceneAsync(sceneId, LoadSceneMode.Additive);
         }
+
+        Debug.Log("loading " + SceneManager.GetSceneByBuildIndex(sceneId).name);
+    }
+
+    private void LoadScenePrevious(int sceneId)
+    {
+        if (SceneManager.sceneCount < 2)
+        {
+            SceneManager.LoadScene(sceneId, LoadSceneMode.Additive);
+        }
+
+        else
+        {
+            Debug.Log("Can't load more than 2 scenes.", this);
+            SceneManager.UnloadSceneAsync(sceneId);
+            SceneManager.LoadSceneAsync(sceneId - 1, LoadSceneMode.Additive);
+        }
+
+        Debug.Log("loading " + SceneManager.GetSceneByBuildIndex(sceneId - 1).name);
     }
 }
