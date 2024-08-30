@@ -1,44 +1,78 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+public enum CheckType
+{
+    distance,
+    trigger
+}
+
 public class ChunkLoader : MonoBehaviour
 {
-    [SerializeField] private ChunkHolderSO _holder;
+    [SerializeField] private bool _isLoaded, _shouldLoad;
     [SerializeField] private Transform _player;
-    private void FixedUpdate()
+    [SerializeField] private float _minDistance;
+    [SerializeField] private CheckType _loadMethod;
+    private void Update()
     {
-        if (_holder && _holder.Chunk)
+        if (_player)
         {
-            if (_holder.CheckMethod == CheckType.distance)
-            {
-                if (_holder.useChunk)
-                {
-                    if (!_holder.Loaded)
-                    {
-                        Instantiate(_holder.Chunk);
-                        _holder.Loaded = true;
-                    }
-                }
+            Debug.DrawLine(transform.position, _player.position, Color.magenta);
 
-                else
-                {
-                    if (Vector3.Distance(transform.position, _player.position) < 3.0f)
-                    {
-                        if (!_holder.Loaded)
-                        {
-                            SceneManager.LoadSceneAsync(_holder.NextSceneName);
-                            _holder.Loaded = true;
-                        }
-                    }
-                }
+            if (_loadMethod == CheckType.distance)
+            {
+                DistanceCheck();
             }
+
+            else if (_loadMethod == CheckType.trigger)
+            {
+                TriggerCheck();
+            }
+        }
+    }
+
+    private void TriggerCheck()
+    {
+
+    }
+
+    private void DistanceCheck()
+    {
+        if (Vector3.Distance(_player.position, transform.position) < _minDistance)
+        {
+            LoadScene();
+        }
+
+        else
+        {
+            UnloadScene();
+        }
+    }
+    private void LoadScene()
+    {
+        if (!_isLoaded)
+        {
+            SceneManager.LoadSceneAsync(gameObject.name, LoadSceneMode.Additive);
+            _isLoaded = true;
+        }
+    }
+
+    private void UnloadScene()
+    {
+        if (_isLoaded)
+        {
+            SceneManager.UnloadSceneAsync(gameObject.name);
+            _isLoaded = false;
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawCube(transform.position, new Vector3(_minDistance, _minDistance * 0.5f, _minDistance));
     }
 }

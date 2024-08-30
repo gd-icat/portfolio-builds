@@ -6,9 +6,11 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] Transform _visual;
-    [SerializeField] float _rotationSensitivity;
+    [SerializeField] float _rotationSensitivity = 10.0f;
     [SerializeField] bool _smoothRotate = false;
     [SerializeField] private CinemachineVirtualCamera _followCam;
+    [SerializeField] private float _moveSpeed = 10.0f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,24 +28,37 @@ public class PlayerMovement : MonoBehaviour
 
         if (h != 0 || v != 0)
         {
-            _followCam.Priority = 17;
-
-            if (_smoothRotate)
+            if (_followCam)
             {
-                //character rotation
-                _visual.forward = Vector3.Lerp(_visual.forward, move, _rotationSensitivity * Time.deltaTime);
+                _followCam.Priority = 17;
             }
 
-            else
+            if (_visual)
             {
-                float angle = mouseX * 90.0f * Time.deltaTime;
-                _visual.Rotate(Vector3.up, angle);
+                if (_smoothRotate)
+                {
+                    //character rotation
+                    _visual.forward = Vector3.Lerp(_visual.forward, move, _rotationSensitivity * Time.deltaTime);
+                }
+
+                else
+                {
+                    float angle = mouseX * 90.0f * Time.deltaTime;
+                    _visual.Rotate(Vector3.up, angle);
+                }
             }
+
+            //movement
+            transform.Translate(move * _moveSpeed * Time.deltaTime);
+            transform.forward = move;
         }
 
         else
         {
-            _followCam.Priority = 15;
+            if (_followCam)
+            {
+                _followCam.Priority = 15;
+            }
         }
     }
 }

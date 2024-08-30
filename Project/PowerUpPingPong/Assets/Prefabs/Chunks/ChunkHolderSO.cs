@@ -1,12 +1,6 @@
 using UnityEditor;
 using UnityEngine;
 
-public enum CheckType
-{
-    distance,
-    trigger
-}
-
 [CreateAssetMenu]
 public class ChunkHolderSO : ScriptableObject
 {
